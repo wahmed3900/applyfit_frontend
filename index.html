@@ -1,3 +1,11 @@
+<!--
+============================================================
+FRONTEND  —  frontend_index.html
+============================================================
+Runs in the user's browser. No secrets. Talks only to the backend.
+Open directly, or serve from FastAPI at "/".
+============================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,72 +14,49 @@
 <title>ApplyFit — Tailor Your Application</title>
 <style>
   :root {
-    --bg: #0f1115;
-    --card: #171a21;
-    --border: #2a2e38;
-    --text: #e8e9ec;
-    --muted: #9aa1ad;
-    --accent: #6c8cff;
-    --good: #4ade80;
-    --bad: #f87171;
+    --bg: #0f1115; --card: #171a21; --border: #2a2e38;
+    --text: #e8e9ec; --muted: #9aa1ad; --accent: #6c8cff;
+    --good: #4ade80; --bad: #f87171;
   }
   * { box-sizing: border-box; }
   body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    padding: 40px 20px;
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg); color: var(--text); padding: 40px 20px;
   }
   .wrap { max-width: 820px; margin: 0 auto; }
   h1 { font-size: 28px; margin-bottom: 4px; }
   .sub { color: var(--muted); margin-bottom: 32px; }
   .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; margin-bottom: 20px;
   }
   label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-  textarea, input {
-    width: 100%;
-    background: #0f1115;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    padding: 12px;
-    font-size: 14px;
-    font-family: inherit;
-    resize: vertical;
+  textarea, input, select {
+    width: 100%; background: #0f1115; border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); padding: 12px;
+    font-size: 14px; font-family: inherit; resize: vertical;
   }
   textarea { min-height: 140px; margin-bottom: 16px; }
-  input { margin-bottom: 16px; }
+  input, select { margin-bottom: 16px; }
   .row { display: flex; gap: 16px; }
   .row > div { flex: 1; }
   button {
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+    background: var(--accent); color: white; border: none;
+    border-radius: 8px; padding: 12px 20px; font-size: 14px;
+    font-weight: 600; cursor: pointer;
   }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
   button.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); margin-left: 8px; }
   .result { display: none; margin-top: 20px; }
-  .score {
-    font-size: 42px; font-weight: 700; color: var(--accent);
-  }
+  .score { font-size: 42px; font-weight: 700; color: var(--accent); }
   .kw-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
   .kw { padding: 4px 10px; border-radius: 999px; font-size: 12px; }
   .kw.match { background: rgba(74,222,128,0.15); color: var(--good); border: 1px solid rgba(74,222,128,0.3); }
-  .kw.miss { background: rgba(248,113,113,0.15); color: var(--bad); border: 1px solid rgba(248,113,113,0.3); }
+  .kw.miss  { background: rgba(248,113,113,0.15); color: var(--bad);  border: 1px solid rgba(248,113,113,0.3); }
   .bullets li { margin-bottom: 8px; line-height: 1.5; }
   .letter { white-space: pre-wrap; line-height: 1.6; font-size: 14px; background: #0f1115; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
-  .error { color: var(--bad); font-size: 13px; margin-top: 8px; display: none; }
+  .error   { color: var(--bad);   font-size: 13px; margin-top: 8px; display: none; }
+  .success { color: var(--good);  font-size: 13px; margin-top: 8px; display: none; }
   .loading { color: var(--muted); font-size: 13px; margin-top: 8px; display: none; }
   h3 { font-size: 15px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
 </style>
@@ -83,10 +68,10 @@
 
   <div class="card">
     <label for="apiUrl">Backend API URL</label>
-    <input id="apiUrl" placeholder="https://your-backend.up.railway.app" value="https://backend-applyfit.onrender.com" />
+    <input id="apiUrl" placeholder="http://localhost:8000" value="http://localhost:8000" />
 
     <label for="jobDesc">Job Description</label>
-    <textarea id="jobDesc" placeholder="Paste the full job posting here, or use the URL field below to fetch it..."></textarea>
+    <textarea id="jobDesc" placeholder="Paste the full job posting here, or use the URL field below..."></textarea>
 
     <div class="row">
       <div style="flex: 3;">
@@ -108,19 +93,25 @@
       </div>
       <div>
         <label for="tone">Tone</label>
-        <input id="tone" value="professional" />
+        <select id="tone">
+          <option value="professional" selected>Professional</option>
+          <option value="enthusiastic">Enthusiastic</option>
+          <option value="concise">Concise</option>
+          <option value="formal">Formal</option>
+        </select>
       </div>
     </div>
 
     <label for="email">Your Email (used to check subscription for Generate)</label>
-    <input id="email" placeholder="you@example.com" />
+    <input id="email" type="email" placeholder="you@example.com" />
 
-    <button id="analyzeBtn" onclick="runAnalyze()">Analyze Match (Free)</button>
+    <button id="analyzeBtn"  onclick="runAnalyze()">Analyze Match (Free)</button>
     <button id="generateBtn" class="secondary" onclick="runGenerate()">Generate Bullets + Cover Letter (Pro)</button>
     <button id="subscribeBtn" class="secondary" onclick="startCheckout()">Subscribe</button>
 
     <div class="loading" id="loading">Working on it...</div>
-    <div class="error" id="error"></div>
+    <div class="success" id="success"></div>
+    <div class="error"   id="error"></div>
   </div>
 
   <div class="card result" id="analyzeResult">
@@ -142,32 +133,37 @@
 </div>
 
 <script>
+/* ---------- helpers ---------- */
+const esc = s => String(s).replace(/[&<>"']/g, c => (
+  { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
+));
+
 function getApiUrl() {
   const url = document.getElementById('apiUrl').value.trim().replace(/\/$/, '');
   if (!url) { showError('Please enter your backend API URL first.'); return null; }
   return url;
 }
-
-function showError(msg) {
-  const el = document.getElementById('error');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-function clearError() {
+function showError(msg)   { const e = document.getElementById('error');   e.textContent = msg; e.style.display = 'block'; }
+function showSuccess(msg) { const e = document.getElementById('success'); e.textContent = msg; e.style.display = 'block'; }
+function clearMessages() {
   document.getElementById('error').style.display = 'none';
+  document.getElementById('success').style.display = 'none';
 }
-
 function setLoading(on) {
   document.getElementById('loading').style.display = on ? 'block' : 'none';
-  document.getElementById('analyzeBtn').disabled = on;
-  document.getElementById('generateBtn').disabled = on;
+  ['analyzeBtn','generateBtn','subscribeBtn'].forEach(id => {
+    document.getElementById(id).disabled = on;
+  });
+}
+async function readError(res) {
+  const data = await res.json().catch(() => ({}));
+  return data.detail || `Server responded with ${res.status}`;
 }
 
+/* ---------- actions ---------- */
 async function fetchJobUrl() {
-  clearError();
-  const apiUrl = getApiUrl();
-  if (!apiUrl) return;
+  clearMessages();
+  const apiUrl = getApiUrl(); if (!apiUrl) return;
   const job_url = document.getElementById('jobUrl').value.trim();
   if (!job_url) { showError('Please enter a job posting URL first.'); return; }
 
@@ -178,10 +174,7 @@ async function fetchJobUrl() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ job_url })
     });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.detail || `Server responded with ${res.status}`);
-    }
+    if (!res.ok) throw new Error(await readError(res));
     const data = await res.json();
     document.getElementById('jobDesc').value = data.job_description;
   } catch (e) {
@@ -192,12 +185,13 @@ async function fetchJobUrl() {
 }
 
 async function runAnalyze() {
-  clearError();
-  const apiUrl = getApiUrl();
-  if (!apiUrl) return;
+  clearMessages();
+  const apiUrl = getApiUrl(); if (!apiUrl) return;
   const job_description = document.getElementById('jobDesc').value.trim();
-  const resume_text = document.getElementById('resumeText').value.trim();
-  if (!job_description || !resume_text) { showError('Please fill in both the job description and resume.'); return; }
+  const resume_text     = document.getElementById('resumeText').value.trim();
+  if (!job_description || !resume_text) {
+    showError('Please fill in both the job description and resume.'); return;
+  }
 
   setLoading(true);
   try {
@@ -206,31 +200,36 @@ async function runAnalyze() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ job_description, resume_text })
     });
-    if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+    if (!res.ok) throw new Error(await readError(res));
     const data = await res.json();
+
     document.getElementById('scoreVal').textContent = data.match_score + '%';
     document.getElementById('summaryText').textContent = data.summary;
-    document.getElementById('matchedList').innerHTML = data.matched_keywords.map(k => `<span class="kw match">${k}</span>`).join('');
-    document.getElementById('missingList').innerHTML = data.missing_keywords.map(k => `<span class="kw miss">${k}</span>`).join('');
+    document.getElementById('matchedList').innerHTML =
+      data.matched_keywords.map(k => `<span class="kw match">${esc(k)}</span>`).join('');
+    document.getElementById('missingList').innerHTML =
+      data.missing_keywords.map(k => `<span class="kw miss">${esc(k)}</span>`).join('');
     document.getElementById('analyzeResult').style.display = 'block';
   } catch (e) {
-    showError('Something went wrong: ' + e.message + '. Check that your backend URL is correct and the server is running.');
+    showError('Something went wrong: ' + e.message);
   } finally {
     setLoading(false);
   }
 }
 
 async function runGenerate() {
-  clearError();
-  const apiUrl = getApiUrl();
-  if (!apiUrl) return;
+  clearMessages();
+  const apiUrl = getApiUrl(); if (!apiUrl) return;
   const job_description = document.getElementById('jobDesc').value.trim();
-  const resume_text = document.getElementById('resumeText').value.trim();
-  const company_name = document.getElementById('companyName').value.trim();
-  const tone = document.getElementById('tone').value.trim() || 'professional';
-  const email = document.getElementById('email').value.trim();
-  if (!job_description || !resume_text) { showError('Please fill in both the job description and resume.'); return; }
-  if (!email) { showError('Please enter your email — it\'s used to check your subscription.'); return; }
+  const resume_text     = document.getElementById('resumeText').value.trim();
+  const company_name    = document.getElementById('companyName').value.trim();
+  const tone            = document.getElementById('tone').value;
+  const email           = document.getElementById('email').value.trim();
+
+  if (!job_description || !resume_text) {
+    showError('Please fill in both the job description and resume.'); return;
+  }
+  if (!email) { showError("Please enter your email — it's used to check your subscription."); return; }
 
   setLoading(true);
   try {
@@ -240,25 +239,26 @@ async function runGenerate() {
       body: JSON.stringify({ job_description, resume_text, company_name: company_name || null, tone, email })
     });
     if (res.status === 402) {
-      showError('This feature requires an active subscription. Click "Subscribe" below to unlock it.');
+      showError('This feature requires an active subscription. Click "Subscribe" to unlock it.');
       return;
     }
-    if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+    if (!res.ok) throw new Error(await readError(res));
     const data = await res.json();
-    document.getElementById('bulletsList').innerHTML = data.tailored_bullets.map(b => `<li>${b}</li>`).join('');
+
+    document.getElementById('bulletsList').innerHTML =
+      data.tailored_bullets.map(b => `<li>${esc(b)}</li>`).join('');
     document.getElementById('letterText').textContent = data.cover_letter;
     document.getElementById('generateResult').style.display = 'block';
   } catch (e) {
-    showError('Something went wrong: ' + e.message + '. Check that your backend URL is correct and the server is running.');
+    showError('Something went wrong: ' + e.message);
   } finally {
     setLoading(false);
   }
 }
 
 async function startCheckout() {
-  clearError();
-  const apiUrl = getApiUrl();
-  if (!apiUrl) return;
+  clearMessages();
+  const apiUrl = getApiUrl(); if (!apiUrl) return;
   const email = document.getElementById('email').value.trim();
   if (!email) { showError('Please enter your email first.'); return; }
 
@@ -269,11 +269,11 @@ async function startCheckout() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email,
-        success_url: window.location.href + '?subscribed=true',
-        cancel_url: window.location.href
+        success_url: window.location.href.split('?')[0] + '?subscribed=true',
+        cancel_url:  window.location.href.split('?')[0]
       })
     });
-    if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+    if (!res.ok) throw new Error(await readError(res));
     const data = await res.json();
     window.location.href = data.checkout_url;
   } catch (e) {
@@ -281,6 +281,12 @@ async function startCheckout() {
   } finally {
     setLoading(false);
   }
+}
+
+/* ---------- on load: show success banner if returning from Stripe ---------- */
+if (new URLSearchParams(location.search).get('subscribed') === 'true') {
+  showSuccess('Subscription active — you can now use Generate.');
+  history.replaceState({}, '', location.pathname);
 }
 </script>
 </body>
