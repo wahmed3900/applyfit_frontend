@@ -1,11 +1,3 @@
-<!--
-============================================================
-FRONTEND  —  frontend_index.html
-============================================================
-Runs in the user's browser. No secrets. Talks only to the backend.
-Open directly, or serve from FastAPI at "/".
-============================================================
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,7 +60,7 @@ Open directly, or serve from FastAPI at "/".
 
   <div class="card">
     <label for="apiUrl">Backend API URL</label>
-    <input id="apiUrl" placeholder="http://localhost:8000" value="http://localhost:8000" />
+    <input id="apiUrl" value="https://applyfit-backend.onrender.com" readonly />
 
     <label for="jobDesc">Job Description</label>
     <textarea id="jobDesc" placeholder="Paste the full job posting here, or use the URL field below..."></textarea>
@@ -140,7 +132,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => (
 
 function getApiUrl() {
   const url = document.getElementById('apiUrl').value.trim().replace(/\/$/, '');
-  if (!url) { showError('Please enter your backend API URL first.'); return null; }
+  if (!url) { showError('Backend API URL is missing.'); return null; }
   return url;
 }
 function showError(msg)   { const e = document.getElementById('error');   e.textContent = msg; e.style.display = 'block'; }
